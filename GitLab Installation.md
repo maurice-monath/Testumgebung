@@ -1,6 +1,6 @@
 # GitLab Installation mit selbstsigniertem SSL-Zertifikat und Exchange Server für E-Mails
 
-Diese Anleitung beschreibt die Installation von GitLab CE auf einer Ubuntu-VM im VLAN 10 (Management) mit einem selbstsignierten SSL-Zertifikat und die Konfiguration eines Exchange Servers für den E-Mail-Versand.
+Diese Anleitung beschreibt die Installation von GitLab CE (Comunity Edition) auf einer Ubuntu-VM im VLAN 10 (Management) mit einem selbstsignierten SSL-Zertifikat und die Konfiguration eines Exchange Servers für den E-Mail-Versand.
 
 ## Voraussetzungen
 
