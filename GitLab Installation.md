@@ -1,12 +1,13 @@
-# GitLab Installation mit selbstsigniertem SSL-Zertifikat
+# GitLab Installation mit selbstsigniertem SSL-Zertifikat und Exchange Server für E-Mails
 
-Diese Anleitung beschreibt die Installation von GitLab CE auf einer Ubuntu-VM im VLAN 10 (Management) mit einem selbstsignierten SSL-Zertifikat.
+Diese Anleitung beschreibt die Installation von GitLab CE auf einer Ubuntu-VM im VLAN 10 (Management) mit einem selbstsignierten SSL-Zertifikat und die Konfiguration eines Exchange Servers für den E-Mail-Versand.
 
 ## Voraussetzungen
 
 - Ubuntu 20.04/22.04 LTS installiert
 - Netzwerkzugriff im VLAN 10
 - Root- oder Sudo-Zugriff auf das System
+- Zugriff auf einen Exchange Server für die E-Mail-Konfiguration
 
 ## Schritt 1: Systemvorbereitung
 
@@ -16,7 +17,14 @@ Diese Anleitung beschreibt die Installation von GitLab CE auf einer Ubuntu-VM im
     sudo reboot
     ```
 
-## Schritt 2: GitLab-Repository hinzufügen und GitLab installieren
+## Schritt 2: GitLab-Abhängigkeiten installieren
+
+1. Installieren Sie die benötigten Abhängigkeiten:
+    ```bash
+    sudo apt install -y curl openssh-server ca-certificates tzdata perl
+    ```
+
+## Schritt 3: GitLab-Repository hinzufügen und GitLab installieren
 
 1. GitLab-Repository hinzufügen und GitLab CE installieren:
     ```bash
@@ -24,7 +32,7 @@ Diese Anleitung beschreibt die Installation von GitLab CE auf einer Ubuntu-VM im
     sudo EXTERNAL_URL="http://<interne-ip-adresse>" apt-get install gitlab-ce
     ```
 
-## Schritt 3: Selbstsigniertes SSL-Zertifikat erstellen
+## Schritt 4: Selbstsigniertes SSL-Zertifikat erstellen
 
 1. Erstellen Sie ein Verzeichnis für das SSL-Zertifikat:
     ```bash
@@ -38,7 +46,7 @@ Diese Anleitung beschreibt die Installation von GitLab CE auf einer Ubuntu-VM im
 
     **Hinweis:** Während des Vorgangs werden Sie nach verschiedenen Informationen gefragt. Geben Sie die entsprechenden Informationen ein. Für den `Common Name (CN)` verwenden Sie die interne IP-Adresse des Servers.
 
-## Schritt 4: GitLab-Konfigurationsdatei bearbeiten
+## Schritt 5: GitLab-Konfigurationsdatei bearbeiten
 
 1. Öffnen Sie die GitLab-Konfigurationsdatei:
     ```bash
@@ -52,16 +60,32 @@ Diese Anleitung beschreibt die Installation von GitLab CE auf einer Ubuntu-VM im
     nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.key"
     ```
 
-3. Speichern und schließen Sie die Datei.
+3. Konfigurieren Sie den E-Mail-Versand über den Exchange Server:
+    ```ruby
+    gitlab_rails['smtp_enable'] = true
+    gitlab_rails['smtp_address'] = "exchange.server.domain"
+    gitlab_rails['smtp_port'] = 587
+    gitlab_rails['smtp_user_name'] = "gitlab@example.com"
+    gitlab_rails['smtp_password'] = "your_password"
+    gitlab_rails['smtp_domain'] = "example.com"
+    gitlab_rails['smtp_authentication'] = "login"
+    gitlab_rails['smtp_enable_starttls_auto'] = true
+    gitlab_rails['smtp_tls'] = false
+    gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
+    gitlab_rails['gitlab_email_from'] = 'gitlab@example.com'
+    gitlab_rails['gitlab_email_reply_to'] = 'noreply@example.com'
+    ```
 
-## Schritt 5: GitLab-Konfiguration neu laden
+4. Speichern und schließen Sie die Datei.
+
+## Schritt 6: GitLab-Konfiguration neu laden
 
 1. Laden Sie die GitLab-Konfiguration neu:
     ```bash
     sudo gitlab-ctl reconfigure
     ```
 
-## Schritt 6: Firewall-Regeln konfigurieren
+## Schritt 7: Firewall-Regeln konfigurieren
 
 Stellen Sie sicher, dass der Zugriff auf GitLab nur aus dem internen Netzwerk möglich ist.
 
@@ -73,7 +97,7 @@ Stellen Sie sicher, dass der Zugriff auf GitLab nur aus dem internen Netzwerk m�
     sudo iptables -A INPUT -p tcp --dport 443 -j DROP
     ```
 
-## Schritt 7: Zugang zu GitLab
+## Schritt 8: Zugang zu GitLab
 
 1. Öffnen Sie einen Browser und greifen Sie auf GitLab zu:
     ```
@@ -84,7 +108,7 @@ Stellen Sie sicher, dass der Zugriff auf GitLab nur aus dem internen Netzwerk m�
     - Legen Sie das Admin-Passwort fest.
     - Konfigurieren Sie Benutzer und Projekte gemäß Ihren Anforderungen.
 
-## Schritt 8: Dokumentation in GitLab
+## Schritt 9: Dokumentation in GitLab
 
 1. Erstellen Sie ein Repository für die Dokumentation:
     - Erstellen Sie ein neues Projekt in GitLab.
@@ -93,3 +117,4 @@ Stellen Sie sicher, dass der Zugriff auf GitLab nur aus dem internen Netzwerk m�
 2. Dokumentation fortlaufend pflegen:
     - Aktualisieren Sie die Dokumentation mit jedem Schritt im Projektplan.
 
+Mit diesen Schritten haben Sie einen provisorischen GitLab-Server eingerichtet, der nur intern verfügbar ist, über ein selbstsigniertes SSL-Zertifikat gesichert ist und den Exchange Server für den E-Mail-Versand verwendet. Sie können nun die weiteren Schritte dokumentieren und fortfahren.
