@@ -13,7 +13,9 @@ Rename-Computer -NewName "NeuerName" -Restart
 ```
 
 Zeitzone auf Deutschland setzen
+```powershell
 Set-TimeZone -Id "W. Europe Standard Time"
+```
 
 ## Schritt 1: AD-Domain-Services auf `TE-DC01` installieren
 
