@@ -12,6 +12,9 @@ Computer Namen bearbeiten:
 Rename-Computer -NewName "NeuerName" -Restart
 ```
 
+Zeitzone auf Deutschland setzen
+Set-TimeZone -Id "W. Europe Standard Time"
+
 ## Schritt 1: AD-Domain-Services auf `TE-DC01` installieren
 
 Führen Sie den folgenden PowerShell-Befehl aus, um die Active Directory Domain Services auf `TE-DC01` zu installieren:
