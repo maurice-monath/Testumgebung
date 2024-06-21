@@ -1,62 +1,92 @@
-# Projektplan: Einrichtung einer sicheren IT-Umgebung mit Proxmox, AD DS, GitLab und Härtung
+# Projektplan für die Testumgebung
 
-## Voraussetzungen
-- Proxmox-Cluster ist eingerichtet.
-- VLANs sind konfiguriert (VLAN 10: Management, VLAN 20: Servers, VLAN 30: Clients).
+## 1. Projektvorbereitung
+   - **Projektziele definieren**: Sicherstellen der Funktionalität und Sicherheit der Testumgebung.
+   - **Ressourcen planen**: Hardware, Software, und personelle Ressourcen.
+   - **Zeitrahmen festlegen**: Start- und Enddatum des Projekts sowie Meilensteine.
 
-## Schritt 1: Temporären GitLab-Server einrichten
+## 2. Netzwerkdesign
+   - **VLAN-Konfiguration**
+     - VLAN 30: Für PAW (Privileged Access Workstation) - IP-Bereich: `192.168.30.x/24`
+     - VLAN 40: Für Server, die auf das AD zugreifen sollen - IP-Bereich: `192.168.40.x/24`
+   - **Subnetz und IP-Adressen planen**
 
-1. **VM im VLAN 10 (Management) erstellen**
-    - Ubuntu LTS installieren
-    - GitLab installieren und mit selbstsigniertem SSL-Zertifikat konfigurieren
-    - Firewall-Regeln setzen, um internen Zugriff zu beschränken
+## 3. Installation und Konfiguration des Windows Server 2025 Core
+   - **Bereitstellung des Servers**: Installation von Windows Server 2025 Core.
+   - **Konfiguration der Netzwerkschnittstellen**: IP-Adressen und DNS-Server einrichten.
 
-## Schritt 2: Active Directory Domain Services (AD DS) einrichten
+## 4. Einrichtung des Active Directory (AD)
+   - **AD-Rolle hinzufügen**
+   - **ADDS-Konfiguration**
 
-### AD-DS Installation
+## 5. Härtung des Active Directory
+   - **Sicherheitsrichtlinien implementieren**:
+     - Passwortrichtlinien
+     - Konto-Sperrrichtlinien
+     - Audit-Richtlinien
+   - **Delegation minimieren**
+   - **Verwaltungskonten schützen**
+   - **Protokollierung aktivieren und überwachen**
 
-1. **VMs für DCs und BAM im VLAN 5 (Servers) erstellen**
-    - Windows Server 2025 Core installieren
-    - AD DS installieren und Domäne konfigurieren
-    - Sicherheitseinstellungen und Gruppenrichtlinien gemäß Best Practices anwenden
-    - Managment nur über die PAW
-    - Nur Ports für ADDS für die anderen VLANS freischalten
+## 6. Einrichtung der Zertifizierungsstelle (CA)
+   - **CA-Rolle hinzufügen**
+   - **Konfiguration der CA**:
+     - **Standalone Root CA**: Erstellen und Konfigurieren der Root-CA.
+     - **Ausstellen von Zertifikaten**: Konfigurieren von Zertifikatsvorlagen.
 
-### Privileged Access Workstation (PAW)
+## 7. Einrichtung der PAW im VLAN 30
+   - **Installation und Konfiguration der PAW**: Einrichten der PAW mit restriktiven Richtlinien.
+   - **Sicherheitsrichtlinien implementieren**:
+     - Einschränkung der Netzwerkzugriffe.
+     - Einschränkung der Softwareinstallationen.
 
-1. **VM im VLAN 5 (ADDS) erstellen**
-    - Windows Server 2025 Desktop installieren
-    - PAW für Verwaltung der DCs konfigurieren
-    - Firewall-Regeln setzen, um Zugriff auf DCs nur von PAW zu erlauben
+## 8. Konfiguration von LDAPS
+   - **Zertifikat für AD DS**: Zertifikat für den LDAP-Dienst installieren und konfigurieren.
+   - **LDAPS aktivieren**: Sicherstellen, dass der LDAP-Dienst über SSL/TLS verfügbar ist.
 
-## Schritt 3: Produktiven GitLab-Server einrichten
+## 9. Server im VLAN 40 konfigurieren
+   - **Windows Server**: Hinzufügen zur Domäne und Konfiguration von Sicherheitsrichtlinien.
+   - **Linux Server**: Konfiguration der LDAPS-Anbindung:
+     - Installation notwendiger Pakete.
+     - Konfiguration von `/etc/sssd/sssd.conf` für LDAPS.
+     - Beitritt zur Domäne.
 
-1. **VM im VLAN 20 (Servers) erstellen**
-    - Ubuntu LTS installieren
-    - GitLab installieren und mit selbstsigniertem SSL-Zertifikat konfigurieren
-    - LDAPS einrichten und GitLab für AD-Authentifizierung konfigurieren
-    - Firewall-Regeln setzen, um internen Zugriff zu beschränken
+## 10. Einrichtung des GitLab Servers
+   - **Installation und Konfiguration des GitLab Servers**: GitLab auf einem internen Server installieren.
+   - **SSL-Zertifikat**: Installation eines SSL-Zertifikats von der internen CA.
+   - **Interne Verfügbarkeit**: Sicherstellen, dass der GitLab Server nur über interne IP und DNS erreichbar ist.
+   - **AD-Integration**: Konfigurieren des GitLab Servers für die Authentifizierung mit AD-Benutzerdaten.
 
-## Schritt 4: Weitere Server einrichten.
+## 11. Sicherheitstests und Validierung
+   - **Sicherheitsaudits durchführen**: Regelmäßige Überprüfung der Sicherheitskonfigurationen.
+   - **Penetrationstests**: Durchführung von internen und externen Tests auf Schwachstellen.
 
-### Windows Server 2025 
+## 12. Dokumentation und Schulung
+   - **Dokumentation der Konfiguration**: Erstellung detaillierter Dokumentationen für alle Konfigurationsschritte.
+   - **Schulung der Administratoren**: Schulung zu den neuen Systemen und Sicherheitsrichtlinien.
 
-1. **VMs im VLAN 20 (Servers) erstellen**
-    - Windows Server 2025 installieren
-    - Anwendungen installieren und konfigurieren
-    - Sicherheitsmaßnahmen gemäß Best Practices implementieren
+## 13. Projektabschluss und Übergabe
+   - **Übergabe an den Betrieb**: Übergabe der dokumentierten Testumgebung an das Betriebsteam.
+   - **Abschlussbericht**: Zusammenfassung des Projekts und der erzielten Ergebnisse.
 
+## Zeitplan (Beispiel)
 
-### Linux Server (Ubuntu 24.04 LTS)
+| Phase                | Aufgabe                                   | Dauer     |
+|----------------------|-------------------------------------------|-----------|
+| 1. Projektvorbereitung | Ziele definieren, Ressourcen planen       | 1 Woche   |
+| 2. Netzwerkdesign      | VLAN-Konfiguration, Subnetzplanung         | 1 Woche   |
+| 3. Installation und Konfiguration | Windows Server installieren    | 2 Wochen  |
+| 4. Einrichtung AD      | AD-Rolle hinzufügen, konfigurieren        | 1 Woche   |
+| 5. Härtung AD          | Sicherheitsrichtlinien implementieren     | 2 Wochen  |
+| 6. Einrichtung CA      | CA-Rolle hinzufügen, konfigurieren        | 1 Woche   |
+| 7. Einrichtung PAW     | PAW konfigurieren                         | 1 Woche   |
+| 8. Konfiguration LDAPS | Zertifikate, LDAPS aktivieren             | 1 Woche   |
+| 9. Konfiguration Server | Windows/Linux Server konfigurieren       | 2 Wochen  |
+| 10. Einrichtung GitLab  | GitLab Server installieren und konfigurieren | 2 Wochen  |
+| 11. Sicherheitstests    | Audits, Penetrationstests                | 2 Wochen  |
+| 12. Dokumentation und Schulung | Dokumentation erstellen, Schulung | 1 Woche   |
+| 13. Projektabschluss    | Übergabe, Abschlussbericht               | 1 Woche   |
 
-1. **VMs im VLAN 20 (Servers) erstellen**
-    - Ubuntu 24.04 LTS installieren
-    - Anwendungen installieren und konfigurieren
-    - Sicherheitsmaßnahmen gemäß Best Practices implementieren
+## Fazit
 
-## Schritt 5: Dokumentation und Skripte in GitLab
-
-1. **Repository für Dokumentation erstellen**
-    - Projekt in GitLab anlegen und Dokumentation hochladen
-    - Skripte zur Automatisierung der Installation und Konfiguration in GitLab speichern
-    - Dokumentation fortlaufend pflegen und aktualisieren
+Dieser Projektplan bietet eine umfassende Anleitung zur Einrichtung einer sicheren Testumgebung mit Windows AD auf einem Server 2025 Core, PAW im VLAN 30, Servern im VLAN 40, und einem internen GitLab Server, der über IP und internen DNS-Namen mit SSL von der Zertifizierungsstelle und AD-Benutzerdaten verfügbar ist. Die strukturierte Vorgehensweise stellt sicher, dass alle Aspekte der Sicherheit und Funktionalität abgedeckt werden.
