@@ -9,11 +9,14 @@ Dieses Projekt zielt darauf ab, eine isolierte Testumgebung in einem Proxmox-Clu
 ### Meilensteine
 
 - [ ] AD-Setup
+- [ ] AD-Härtung
 - [ ] CA-Setup
 - [ ] WSUS-Setup
 - [ ] GitLab-Setup
 - [ ] Terraform-Setup
 
+git config --global user.email "maurice@monath.xyz"
+  git config --global user.name "Maurice Monath"
 
 ### Dokumentation
 
@@ -23,6 +26,7 @@ Dieses Projekt zielt darauf ab, eine isolierte Testumgebung in einem Proxmox-Clu
 - [Intermediate CA Installation](./docs/intermediate-ca-installation.md)
 - [WSUS Installation](./docs/wsus-installation.md)
 - [GitLab Installation](./docs/gitlab-installation.md)
+- [Terraform Installation](./docs/terraform-installation.md)
 
 ## Nutzung von Skripten
 
