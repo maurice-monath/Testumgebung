@@ -15,9 +15,6 @@ Dieses Projekt zielt darauf ab, eine isolierte Testumgebung in einem Proxmox-Clu
 - [ ] GitLab-Setup
 - [ ] Terraform-Setup
 
-git config --global user.email "maurice@monath.xyz"
-  git config --global user.name "Maurice Monath"
-
 ### Dokumentation
 
 - [AD Installation und Konfiguration](./docs/ad-installation.md)
