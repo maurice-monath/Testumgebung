@@ -8,7 +8,7 @@ Dieses Projekt zielt darauf ab, eine isolierte Testumgebung in einem Proxmox-Clu
 
 ### Meilensteine
 
-- [ ] AD-Setup
+- [X] AD-Setup
 - [ ] AD-Härtung
 - [ ] CA-Setup
 - [ ] WSUS-Setup
