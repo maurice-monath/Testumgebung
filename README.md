@@ -12,6 +12,7 @@ Dieses Projekt zielt darauf ab, eine isolierte Testumgebung in einem Proxmox-Clu
 - [ ] CA-Setup
 - [ ] WSUS-Setup
 - [ ] GitLab-Setup
+- [ ] Terraform-Setup
 
 
 ### Dokumentation
